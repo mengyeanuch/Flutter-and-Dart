@@ -43,23 +43,13 @@ class CustomButtons extends StatefulWidget {
 class _CustomButtonsState extends State<CustomButtons> {
   bool isClicked = false;
 
-  Color background = Colors.blue[50]!;
-  Color textColor = Colors.black;
-  String buttonText = "Not Selected";
+  Color get background => isClicked ? Colors.blue[500]! : Colors.blue[50]!;
+  String get buttonText => isClicked ? "Selected" : "Not Selected";
+  Color get textColor => isClicked ? Colors.white : Colors.black;
 
   void changeColor() {
     setState(() {
-      if (!isClicked) {
-        background = Colors.blue[500]!;
-        buttonText = "Selected";
-        textColor = Colors.white;
-        isClicked = true;
-      } else {
-        background = Colors.blue[50]!;
-        buttonText = "Not Selected";
-        textColor = Colors.black;
-        isClicked = false;
-      }
+      isClicked = !isClicked;
     });
   }
 

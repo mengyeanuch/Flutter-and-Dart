@@ -11,9 +11,9 @@ void main() {
         ),
         body: const Column(
           children: [
-            FavoriteCard(isFavorite: false),
-            FavoriteCard(isFavorite: true),
-            FavoriteCard(isFavorite: true),
+            FavoriteCard(),
+            FavoriteCard(),
+            FavoriteCard(),
           ],
         ),
       ),
@@ -22,23 +22,13 @@ void main() {
 }
 
 class FavoriteCard extends StatefulWidget {
-  final bool isFavorite;
-
-  const FavoriteCard({super.key, required this.isFavorite});
-
+  const FavoriteCard({super.key});
   @override
   State<FavoriteCard> createState() => _FavoriteCardState();
 }
 
 class _FavoriteCardState extends State<FavoriteCard> {
-  late bool isFavorite;
-
-  @override
-  void initState() {
-    super.initState();
-    isFavorite = widget.isFavorite;
-  }
-
+  bool isFavorite = false;
   void toggleFavorite() {
     setState(() {
       isFavorite = !isFavorite;
@@ -77,7 +67,6 @@ class _FavoriteCardState extends State<FavoriteCard> {
               color: isFavorite ? Colors.red : Colors.grey,
             ),
           ),
-          
         ],
       ),
     );
