@@ -1,36 +1,16 @@
 import 'package:flutter/material.dart';
-import 'temperature_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
-
+  //add callback
+  final VoidCallback onStartPressed;
+  const WelcomeScreen({super.key, required this.onStartPressed});
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  bool started = false;
-
   @override
   Widget build(BuildContext context) {
-    if (started) {
-      return TemperatureScreen();
-    }
-    // Widget build(BuildContext context) {
-    //   return started
-    //       ? const TemperatureScreen()
-    //       : Center(
-    //           child: OutlinedButton(
-    //             onPressed: () {
-    //               setState(() {
-    //                 started = true;
-    //               });
-    //             },
-    //             child: const Text("Start to convert"),
-    //           ),
-    //         );
-    // }
-
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -49,15 +29,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ),
           const SizedBox(height: 15),
           OutlinedButton(
-            onPressed: () {
-              setState(() {
-                started = true;
-              });
-            },
+            onPressed: widget.onStartPressed,
             style: OutlinedButton.styleFrom(
               side: const BorderSide(width: 1.0, color: Colors.white),
             ),
-            child: Text(
+            child: const Text(
               'Start to convert',
               style: TextStyle(color: Colors.white, fontSize: 15),
             ),
