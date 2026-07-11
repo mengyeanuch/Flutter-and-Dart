@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/repository/repository_exception.dart';
-
 import '../../../data/repository/todo_repository.dart';
 import '../../../models/todo.dart';
 import '../../theme/app_screen.dart';
@@ -36,6 +35,19 @@ class _TodosScreenState extends State<TodosScreen> {
 
     // List<Todo> todos = await repository.getTodos();
     // setState(() => asyncData = AsyncData.success(todos),);
+
+    asyncData = AsyncData.loading();
+
+    try {
+      List<Todo> toDoList = await repository.getTodos();
+      setState(() {
+        asyncData = AsyncData.success(toDoList);
+      });
+    } on RepositoryException catch (e) {
+      setState(() {
+        asyncData = AsyncData.error(e.message);
+      });
+    }
   }
 
   void onUpdateCompleted(Todo todo) async {
@@ -47,6 +59,31 @@ class _TodosScreenState extends State<TodosScreen> {
     // Update the widget state (asyncData)
 
     // ! we dont reload the full list, we update directly the modified Todo in the cache (asyncData)
+    bool newStatus = !todo.completed;
+
+    try {
+      repository.updateCompleted(todo.id, newStatus);
+      setState(() {
+        final List<Todo>? currentList = asyncData.value;
+        final List<Todo> newList = [];
+
+        for (Todo currentTodo in currentList!) {
+          if (todo.id == currentTodo.id) {
+            newList.add(
+              Todo(id: todo.id, title: todo.title, completed: newStatus),
+            );
+          } else {
+            newList.add(currentTodo);
+          }
+
+          asyncData = AsyncData.success(newList);
+        }
+      });
+    } on RepositoryException catch (e) {
+      setState(() {
+        asyncData = AsyncData.error(e.message);
+      });
+    }
   }
 
   Widget get content => switch (asyncData.status) {
