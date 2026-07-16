@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dart/Week10+11/model/user.dart';
 import 'package:http/http.dart' as http;
 
 import '../../model/auth_session.dart';
@@ -27,14 +28,19 @@ class AuthenticationService {
     );
 
     // 3- Decode the json
-    Map<String, dynamic> json = jsonDecode(response.body); 
+    Map<String, dynamic> json = jsonDecode(response.body);
 
     // 4 - If failed, throw a AuthException
-
+    if (response.statusCode != 200) {
+      throw AuthException(json["error"] ?? "Login failed");
+    }
+    print(json);
     // 5 -  Get the token
+    final String token = json["token"];
     // 5 -  Get the user
-
+    final User user = User.fromJSon(json["user"]);
     // 6 - Update the session
+    session = AuthSession(token: token, user: user);
   }
 }
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dart/Week10+11/data/repositories/scores_repository.dart';
+import 'package:flutter_dart/Week10+11/data/services/auth_service.dart';
  
 import '../model/score.dart';
 
@@ -22,26 +24,54 @@ class _ScoresScreenState extends State<ScoresScreen> {
 
   void fetchSCores() async {
 
-    // Ask the ScoresRepository instance to fetch the scores 
-    
-    // if succes, update the scores list and refresh
-    // If failure, update the error and refresh
+     // Ask the ScoresRepository instance to fetch the scores
+    try {
+      final List<Score> fetchedScores = await ScoresRepository.instance
+          .getSCores();
+
+      if (!mounted) return;
+
+      // if succes, update the scores list and refresh
+      setState(() {
+        scores = fetchedScores;
+        error = null;
+      });
+    } catch (exception) {
+      if (!mounted) return;
+
+      // If failure, update the error and refresh
+      setState(() {
+        error = exception.toString();
+      });
+    }
   }
 
   String? get userName {
-   
     // Ask the AuthenticationService instance the current user nale (if any)
-
-    return null;
+    return AuthenticationService.instance.session?.user.name;
   }
-
   Widget get content {
 
-    // If scores list => dispaly the list using the ScoreTile
+     // If scores list => dispaly the list using the ScoreTile
+    if (scores != null) {
+      return ListView.builder(
+        itemCount: scores!.length,
+        itemBuilder: (context, index) {
+          return ScoreTile(score: scores![index]);
+        },
+      );
+    }
 
     // if error, dispaly the erro in red, centered
+    if (error != null) {
+      return Text(
+        error!,
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
+      );
+    }
 
-    // otherwise, we disaply the  CircularProgressIndicator 
+    // otherwise, we disaply the  CircularProgressIndicator
     return CircularProgressIndicator();
   }
 

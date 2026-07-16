@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dart/Week10+11/data/services/auth_service.dart';
+import 'package:flutter_dart/Week10+11/ui/scores_screen.dart';
 import 'auth_screen.dart';
  
 class AppScreen extends StatefulWidget {
@@ -17,7 +19,10 @@ class _AppScreenState extends State<AppScreen> {
   Widget get content {
 
     // if logged in -> Display ScoresScreen
-
+    if (AuthenticationService.instance.isLoggedIn) {
+      return const ScoresScreen();
+    }
+    
     // otherwise -> DisplayAuthScreen
     return AuthScreen(onLogin: onLogin);
   }

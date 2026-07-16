@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 
 import '../../model/auth_session.dart';
 import '../../model/score.dart';
@@ -20,15 +19,27 @@ class ScoresRepository {
     }
 
     // Fetch the GET /scores with the token included in the headers
+    final http.Response response = await http.get(
+      scoresUri,
+      headers: {"Authorization": "Bearer ${session.token}"},
+    );
 
-    //  If statusCode 200, decode the json body
+    // If statusCode 200, decode the json body
+    if (response.statusCode == 200) {
+      final List<dynamic> json = jsonDecode(response.body);
 
-    // Convert the json to the lost of scores
+      // Convert the json to the list of scores
+      final List<Score> scores = json
+          .map((scoreJson) => Score.fromJSon(scoreJson as Map<String, dynamic>))
+          .toList();
 
-    // Ifd success Return the scores
+      // If success, return the scores
+      return scores;
+    }
 
-    // If no success throw exception
-
-    return [];  // fake
+    // If no success, throw exception
+    throw Exception("Could not fetch scores");
+    
+    
   }
 }

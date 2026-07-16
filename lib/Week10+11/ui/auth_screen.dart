@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dart/Week10+11/data/services/auth_service.dart';
  
 import 'theme.dart';
 
@@ -21,14 +22,36 @@ class _AuthScreenState extends State<AuthScreen> {
     // Wrap all the code with a try/catch on AuthException: if exception, disaplyer error with the exception
 
     // Get the name + password from controllers
-
-    // Validate the name+password => if empty display error :  "Name and password shall be entered"
+    final String name = nameController.text.trim();
+    final String password = passwordController.text;
     
-    // Call AuthenticationService instance to login
+    // Validate the name+password => if empty display error :  "Name and password shall be entered"
+    if (name.isEmpty || password.isEmpty) {
+      setState(() {
+        errorMessage = "Name and password shall be entered";
+      });
+      return;
+    }
+    
+    try {
+      setState(() {
+        errorMessage = null;
+      });
 
-    // Iff success, notify the parent (use the callback) and refresh the state
+      // Call AuthenticationService instance to login
 
-    // If failure disaply the error and refresh
+      await AuthenticationService.instance.login(
+        name: name,
+        password: password,
+      );
+      // Iff success, notify the parent (use the callback) and refresh the state
+      widget.onLogin();
+    } on AuthException catch (error) {
+      setState(() {
+      // If failure disaply the error and refresh 
+        errorMessage = error.message;
+      });
+    }
    
   }
 
@@ -46,7 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
             const SizedBox(height: 20),
 
             // Login image
-            Image.asset("assets/auth/login.png", height: 250),
+            Expanded(child: Image.asset("../../../assets/Week10+11/login_bg.jpg", fit:BoxFit.cover)),
 
             const SizedBox(height: 40),
 
